@@ -3,11 +3,17 @@ from expense import Expense
 from datetime import datetime
 
 def main():
+    expense_file_path = "expenses.csv"
+
     while True:
         print("Running Expense Tracker!")
-        expense_file_path = "expenses.csv"
-        budget = 2000  # Set budget
 
+        budget = float(input("Enter your monthly budget: "))
+
+        # Clear file when restarting
+        with open(expense_file_path, 'w') as f:
+            f.write("")  # Empty file
+        
         expense = get_user_expense()  
         save_expense_to_file(expense, expense_file_path)  
         
@@ -42,7 +48,7 @@ def get_user_expense():
 
 def save_expense_to_file(expense, expense_file_path):
     print(f"Saving User Expense: {expense} to {expense_file_path}")
-    with open(expense_file_path, 'a') as f:
+    with open(expense_file_path, 'a') as f:  # Append mode
         f.write(f"{expense.name},{expense.amount},{expense.category}\n")
 
 def summarize_expenses(expense_file_path, budget):
