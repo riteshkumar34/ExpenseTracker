@@ -4,27 +4,32 @@ from datetime import datetime
 
 def main():
     expense_file_path = "expenses.csv"
+    budget = None  # Budget retain karne ke liye variable
 
     while True:
-        print("Running Expense Tracker!")
+        print("\nRunning Expense Tracker!")
 
-        budget = float(input("Enter your monthly budget: "))
+        if budget is None:
+            budget = float(input("Enter your monthly budget: "))
 
-        # Clear file when restarting
-        with open(expense_file_path, 'w') as f:
-            f.write("")  # Empty file
+        expense = get_user_expense()
+        save_expense_to_file(expense, expense_file_path)
+
+        summarize_expenses(expense_file_path, budget)
+
+        restart = input("\nDo you want to restart? (yes/no) or enter 'new budget' to reset everything: ").strip().lower()
         
-        expense = get_user_expense()  
-        save_expense_to_file(expense, expense_file_path)  
-        
-        summarize_expenses(expense_file_path, budget)  # Pass budget
-        
-        restart = input("Do you want to restart? (yes/no): ").strip().lower()
-        if restart != 'yes':
+        if restart == 'new budget':
+            budget = float(input("Enter your new monthly budget: "))  # New budget set kare
+            with open(expense_file_path, 'w') as f:
+                f.write("")  # File clear kare
+            print("Budget and expense history cleared! Starting fresh.")
+
+        elif restart != 'yes':
             break
 
 def get_user_expense():
-    print("Getting User Expense")
+    print("\nGetting User Expense")
     expense_name = input("Enter expense name: ")
     expense_amount = float(input("Enter expense amount: "))
     print(f"You have entered {expense_name}, {expense_amount}")
@@ -41,8 +46,7 @@ def get_user_expense():
 
         if 0 <= selected_index < len(expense_categories):
             selected_category = expense_categories[selected_index]
-            new_expense = Expense(name=expense_name, category=selected_category, amount=expense_amount)
-            return new_expense
+            return Expense(name=expense_name, category=selected_category, amount=expense_amount)
         else:
             print("Invalid category: Please try again!")
 
@@ -52,9 +56,9 @@ def save_expense_to_file(expense, expense_file_path):
         f.write(f"{expense.name},{expense.amount},{expense.category}\n")
 
 def summarize_expenses(expense_file_path, budget):
-    print("Summarizing User Expense")
+    print("\nSummarizing User Expense")
     expenses = []
-    
+
     try:
         with open(expense_file_path, 'r') as f:
             lines = f.readlines()
@@ -67,20 +71,23 @@ def summarize_expenses(expense_file_path, budget):
             print(exp)
 
         # Calculate total spent
-        total_spent = sum([x.amount for x in expenses])
-        print(f"You have spent ${total_spent:.2f} this month!")
+        total_spent = sum(x.amount for x in expenses)
+        print(f"\nYou have spent ${total_spent:.2f} this month!")
 
         # Calculate remaining budget
         remaining_budget = budget - total_spent
         print(f"Budget Remaining: ${remaining_budget:.2f} this month")
 
-        now=datetime.now()
-        days_in_month=calendar.monthrange(now.year,now.month)[1]
-        remaining_days=days_in_month-now.day
+        now = datetime.now()
+        days_in_month = calendar.monthrange(now.year, now.month)[1]
+        remaining_days = days_in_month - now.day
         print("Remaining days in the current month:", remaining_days)
 
-        daily_budget=remaining_budget/remaining_days
-        print(f"Budget Per Day: ${daily_budget:.2f}")
+        if remaining_days > 0:
+            daily_budget = remaining_budget / remaining_days
+            print(f"Budget Per Day: ${daily_budget:.2f}")
+        else:
+            print("Month is ending, adjust your spending accordingly!")
     
     except FileNotFoundError:
         print("No expenses found! File does not exist.")
