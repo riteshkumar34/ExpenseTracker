@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>Finance Tracker</title>
+</head>
+<body>
+    <h1>Our Monthly Finance Tracker</h1>
+    <form action="">
+        <label for="budgetmonthly">Enter your monthly budget:</label>
+        <input type="number" id="budgetmonthly" name="budgetmonthly" min="2000" required>
+
+        <label for="expensename">Enter your expense name:</label>
+        <input type="text" id="expensename" name="expensename" required>
+
+        <label for="expenseamount">Enter your expense amount:</label>
+        <input type="number" id="expenseamount" name="expenseamount" min="0" required>
+
+        <label for="category">Choose a category:</label>
+        <select id="category" name="category">
+            <option value="Food">Food</option>
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="Fun">Fun</option>
+            <option value="Misc">Misc</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+    
+    <p>Do you want to restart?</p>
+    <div class="radio-group">
+        <label>
+            <input type="radio" name="choice" value="yes"> Yes
+        </label>
+        <label>
+            <input type="radio" name="choice" value="no"> No
+        </label>
+    </div>
+</body>
+</html>
